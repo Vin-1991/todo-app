@@ -16,11 +16,13 @@ export const todoBuckets = (state = initialTodoBucketState, action) => {
                     data: {
                         ...state.data,
                         [state.nextBucketId]: {
-                            deleted: false,
                             bucketName: action.payload.bucketName,
                             incompeleteCount: action.payload.incompeleteCount,
                             completedCount: action.payload.completedCount,
-                            createdTime: action.payload.createdTime
+                            createdTime: action.payload.createdTime,
+                            todoList: {},
+                            deleted: false,
+
                         },
                     },
                     nextBucketId: state.nextBucketId + 1

@@ -11,7 +11,6 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -38,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(0.5),
     },
     section1: {
-        margin: theme.spacing(3, 2),
+        margin: theme.spacing(2),
     },
     section2: {
         margin: theme.spacing(2),
@@ -56,7 +55,19 @@ function AddToDo({ addTodo }) {
     const classes = useStyles();
     const [open, setOpen] = useState(true);
     const [checked, setChecked] = useState([]);
-    const [completed, setCompleted] = useState([]);
+    const [tododata, setToDoData] = useState([
+        {
+            num: 1,
+            name: 'hello'
+        },
+        {
+            num: 2,
+            name: 'world'
+        },
+        {
+            num: 3,
+            name: 'test'
+        }]);
 
     const handleClickOpen = () => setOpen(true);
 
@@ -72,11 +83,19 @@ function AddToDo({ addTodo }) {
             newChecked.splice(currentIndex, 1);
         }
         setChecked(newChecked);
-    };
+    }
 
     const [addToDoValue, setToDoValue] = useState('');
 
-    const handleOnTextBoxChange = e => setToDoValue(e.target.value);
+    const handleOnTextBoxChange = e => {
+        const { value, id } = e.target;
+        const newArray = [...tododata];
+        newArray[id] = {
+            ...newArray[id],
+            name: value
+        }
+        setToDoData(newArray);
+    }
 
     const handleAddToDoValue = () => {
         setToDoValue('');
@@ -88,7 +107,7 @@ function AddToDo({ addTodo }) {
             <Button variant="outlined" color="primary" onClick={handleClickOpen}>
                 Open full-screen dialog
       </Button>
-            <Dialog fullWidth maxWidth="md" open={open} onClose={handleClose} scroll="paper">
+            <Dialog fullWidth maxWidth="sm" open={open} scroll="paper">
                 <DialogTitle id="scroll-dialog-title">Subscribe
                 <IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
                         <CloseIcon />
@@ -97,45 +116,47 @@ function AddToDo({ addTodo }) {
                 <DialogContent dividers>
 
                     <div className={classes.root}>
-                        <div style={{ alignItems: "center" }}>
-                            <TextField
-                                label="Add a ToDo"
-                                style={{ margin: 8, width: '60ch' }}
-                                margin="normal"
-                                onChange={handleOnTextBoxChange}
-                                value={addToDoValue}
-                            />
 
-                            <IconButton edge="end" aria-label="addToDo" style={{ fontSize: "20px" }} onClick={handleAddToDoValue} >
-                                <NoteAddIcon />
-                            </IconButton>
-                        </div>
                         <div className={classes.section1}>
 
-                            <Grid container alignItems="center">
+                            <TextField
+                                label="Add a ToDo"
+                                style={{
+                                    marginTop: "-16px", width: '50ch'
+                                }}
+                            />
 
+                            <IconButton aria-label="addToDo" onClick={handleAddToDoValue} >
+                                <NoteAddIcon />
+                            </IconButton>
+
+                            <Grid container alignItems="center">
                                 <Grid item xs>
                                     <Typography gutterBottom variant="h5">
                                         Incomplete Items
                                 </Typography>
                                     <TodoList />
                                     <List className={classes.root}>
-                                        {[0, 1, 2, 3].map((value) => {
-                                            const labelId = `checkbox-list-label-${value}`;
+                                        {tododata.map((item, index) => {
+                                            const labelId = `checkbox-list-label-${index}`;
 
                                             return (
-                                                <ListItem key={value} role={undefined} dense button onClick={handleToggle(value)}>
+                                                <ListItem key={index} role={undefined} dense button>
                                                     <ListItemIcon>
                                                         <Checkbox
                                                             edge="start"
-                                                            checked={checked.indexOf(value) !== -1}
+                                                            checked={checked.indexOf(index) !== -1}
                                                             tabIndex={-1}
                                                             disableRipple
                                                             inputProps={{ 'aria-labelledby': labelId }}
+                                                            onClick={handleToggle(index)}
                                                         />
                                                     </ListItemIcon>
-
-                                                    <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
+                                                    <TextField
+                                                        style={{ marginTop: "-16px", width: '60ch' }}
+                                                        onChange={handleOnTextBoxChange}
+                                                        key={index} value={item.name} id={index.toString()}
+                                                    />
                                                     <ListItemSecondaryAction>
                                                         <IconButton edge="end" aria-label="deleteToDo">
                                                             <DeleteForeverIcon />
@@ -155,11 +176,10 @@ function AddToDo({ addTodo }) {
                                 Completed Items
         </Typography>
                             <List className={classes.root}>
-                                {[0, 1, 2, 3].map((value) => {
+                                {[0, 1].map((value) => {
                                     const labelId = `checkbox-list-label-${value}`;
-
                                     return (
-                                        <ListItem key={value} role={undefined} dense button onClick={handleToggle(value)}>
+                                        <ListItem key={value} role={undefined} dense button >
                                             <ListItemIcon>
                                                 <Checkbox
                                                     edge="start"
@@ -167,11 +187,16 @@ function AddToDo({ addTodo }) {
                                                     tabIndex={-1}
                                                     disableRipple
                                                     inputProps={{ 'aria-labelledby': labelId }}
+                                                    onClick={handleToggle(value)}
                                                 />
                                             </ListItemIcon>
-                                            <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
+                                            <TextField
+                                                style={{ marginTop: "-16px", width: '60ch' }}
+                                                onChange={handleOnTextBoxChange}
+                                                value={addToDoValue}
+                                            />
                                             <ListItemSecondaryAction>
-                                                <IconButton edge="end" aria-label="deleteToDo">
+                                                <IconButton aria-label="deleteToDo">
                                                     <DeleteForeverIcon />
                                                 </IconButton>
                                             </ListItemSecondaryAction>
