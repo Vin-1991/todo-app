@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -6,7 +6,8 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { todoBuckets, editTodoBucket } from '../redux/actions';
+import { editTodoBucket } from '../redux/actions';
+import { todoBuckets } from '../redux/bucketReducers';
 import { connect } from 'react-redux';
 import _ from 'underscore';
 import AddBucket from '../components/addBucket';
@@ -41,8 +42,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ToDoMain({ todoBuckets, editTodoBucket }) {
+    console.log(editTodoBucket);
     const classes = useStyles();
-    console.log(todoBuckets);
+    const [openModal, setOpenModal] = useState(true);
+    const [getBucketData, setBucketData] = useState([]);
+
+    const renderBucketData = (bucketData) => {
+        editTodoBucket(bucketData);
+        setBucketData(bucketData);
+    }
+
     return (
         <>
             <CssBaseline />
@@ -57,7 +66,7 @@ function ToDoMain({ todoBuckets, editTodoBucket }) {
                             <Grid container spacing={2} justify="center">
                                 <Grid item>
                                     <AddBucket />
-                                    <AddToDo />
+                                    <AddToDo bucketData={getBucketData} />
                                 </Grid>
                             </Grid>
                         </div>
@@ -65,18 +74,23 @@ function ToDoMain({ todoBuckets, editTodoBucket }) {
                 </div>
                 <Container className={classes.cardGrid} maxWidth="xl">
                     <Grid container spacing={3}>
-                        {_.keys(todoBuckets).map((card) => (
-                            <Grid item key={card.id} xs={12} sm={6} md={3}>
-                                <Card className={classes.card}>
+                        {_.keys(todoBuckets.data).map((card) => (
+                            <Grid item key={card} xs={12} sm={6} md={3}>
+                                <Card className={classes.card} onClick={() => renderBucketData(todoBuckets.data[card])}>
                                     <CardContent className={classes.cardContent}>
-                                        <Typography gutterBottom variant="h5" component="h2">
-                                            Heading {card.bucketName}
+                                        <Typography gutterBottom variant="h5" component="h2" align="center" >
+                                            {todoBuckets.data[card].bucketName}
                                         </Typography>
                                         <Typography>
-                                            This is a media card. You can use this section to describe the content.
-                    </Typography>
+                                            InCompeted : {todoBuckets.data[card].incompeleteCount}
+                                        </Typography>
+                                        <Typography>
+                                            Competed : {todoBuckets.data[card].completedCount}
+                                        </Typography>
+                                        <Typography>
+                                            Created at : {todoBuckets.data[card].createdTime}
+                                        </Typography>
                                     </CardContent>
-
                                 </Card>
                             </Grid>
                         ))}
@@ -88,4 +102,4 @@ function ToDoMain({ todoBuckets, editTodoBucket }) {
     );
 }
 
-export default connect(null, { editTodoBucket })(ToDoMain);
+export default connect(todoBuckets, { editTodoBucket })(ToDoMain);

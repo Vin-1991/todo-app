@@ -4,10 +4,12 @@ import Autocomplete, { createFilterOptions } from '@material-ui/lab/Autocomplete
 
 import { connect } from 'react-redux';
 import { addTodoBucket } from '../redux/actions';
+import { todoBuckets } from '../redux/bucketReducers';
 
 const filter = createFilterOptions();
 
 function AddToDoBucket({ todoBuckets, addTodoBucket }) {
+
     const [value, setValue] = useState(null);
 
     const getCurrentDateTime = () => {
@@ -52,6 +54,7 @@ function AddToDoBucket({ todoBuckets, addTodoBucket }) {
                                 bucketName: `Add "${params.inputValue}"`,
                             });
                         }
+                        params.inputValue = '';
                         return filtered;
                     }}
                     selectOnFocus
@@ -86,4 +89,4 @@ const sample = [{
     bucketName: 'test1'
 }]
 
-export default connect(null, { addTodoBucket })(AddToDoBucket)
+export default connect(todoBuckets, { addTodoBucket })(AddToDoBucket)

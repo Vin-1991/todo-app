@@ -8,7 +8,6 @@ const Todo = ({ todo, id, toggleTodo }) => (
 )
 
 function TodoList({ todos, toggleTodo }) {
-    console.log(todos);
     return (
         _.keys(todos).map((id) => (
             <Todo key={id} id={id} toggleTodo={toggleTodo} todo={todos[id]} />

@@ -1,10 +1,8 @@
-import { ADD_TODO_BUCKET, DELETE_TODO_BUCKET, EDIT_TODO_BUCKET } from './actionTypes'
+import { ADD_TODO_BUCKET, DELETE_TODO_BUCKET, EDIT_TODO_BUCKET, OPEN_MODAL } from './actionTypes'
 
 const initialTodoBucketState = {
-    nextBucketId: 2,
-    data:
-    {
-    }
+    nextBucketId: 1,
+    data: {}
 }
 
 export const todoBuckets = (state = initialTodoBucketState, action) => {
@@ -20,9 +18,8 @@ export const todoBuckets = (state = initialTodoBucketState, action) => {
                             incompeleteCount: action.payload.incompeleteCount,
                             completedCount: action.payload.completedCount,
                             createdTime: action.payload.createdTime,
-                            todoList: {},
-                            deleted: false,
-
+                            todoList: [{}],
+                            deleted: false
                         },
                     },
                     nextBucketId: state.nextBucketId + 1
@@ -38,6 +35,7 @@ export const todoBuckets = (state = initialTodoBucketState, action) => {
                         ...state.data,
                         [action.payload.id]: {
                             ...state.data[action.payload.id],
+                            filteredData: state.data[action.payload.id]
                         }
                     }
                 }
@@ -57,6 +55,16 @@ export const todoBuckets = (state = initialTodoBucketState, action) => {
                 }
             )
         }
+
+        case OPEN_MODAL: {
+            return (
+                {
+                    ...state,
+
+                }
+            )
+        }
+
 
         default: {
             return state

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -19,7 +19,8 @@ import TextField from '@material-ui/core/TextField';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import { connect } from 'react-redux';
 import TodoList from '../components/todoList';
-import { addTodo } from '../redux/actions';
+import { addTodo, editTodoBucket } from '../redux/actions';
+import { todoBuckets } from '../redux/bucketReducers';
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -50,11 +51,11 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
-function AddToDo({ addTodo }) {
+function AddToDo({ }) {
     const classes = useStyles();
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     const [checked, setChecked] = useState([]);
+    const [addToDoValue, setToDoValue] = useState('');
     const [tododata, setToDoData] = useState([
         {
             num: 1,
@@ -85,8 +86,6 @@ function AddToDo({ addTodo }) {
         setChecked(newChecked);
     }
 
-    const [addToDoValue, setToDoValue] = useState('');
-
     const handleOnTextBoxChange = e => {
         const { value, id } = e.target;
         const newArray = [...tododata];
@@ -103,13 +102,10 @@ function AddToDo({ addTodo }) {
     }
 
     return (
-        <div>
-            <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-                Open full-screen dialog
-      </Button>
+        <>
             <Dialog fullWidth maxWidth="sm" open={open} scroll="paper">
-                <DialogTitle id="scroll-dialog-title">Subscribe
-                <IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
+                <DialogTitle id="scroll-dialog-title">
+                    <IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
                         <CloseIcon />
                     </IconButton>
                 </DialogTitle>
@@ -209,8 +205,8 @@ function AddToDo({ addTodo }) {
                     </div>
                 </DialogContent>
             </Dialog>
-        </div>
+        </>
     );
 }
 
-export default connect(null, { addTodo })(AddToDo)
+export default connect(todoBuckets, { addTodo })(AddToDo)
