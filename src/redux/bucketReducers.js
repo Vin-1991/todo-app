@@ -4,12 +4,6 @@ const initialTodoBucketState = {
     nextBucketId: 2,
     data:
     {
-        1: {
-            bucketName: 'Bucket 1',
-            incompeleteCount: 0,
-            completedCount: 0,
-            createdTime: '02-02-2020'
-        }
     }
 }
 
@@ -22,6 +16,7 @@ export const todoBuckets = (state = initialTodoBucketState, action) => {
                     data: {
                         ...state.data,
                         [state.nextBucketId]: {
+                            deleted: false,
                             bucketName: action.payload.bucketName,
                             incompeleteCount: action.payload.incompeleteCount,
                             completedCount: action.payload.completedCount,

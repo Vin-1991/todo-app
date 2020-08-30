@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { editTodoBucket } from '../redux/actions';
+import { todoBuckets, editTodoBucket } from '../redux/actions';
 import { connect } from 'react-redux';
 import _ from 'underscore';
 import AddBucket from '../components/addBucket';
@@ -40,13 +40,9 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const cards = [1];
-
-
 function ToDoMain({ todoBuckets, editTodoBucket }) {
     const classes = useStyles();
     console.log(todoBuckets);
-
     return (
         <>
             <CssBaseline />

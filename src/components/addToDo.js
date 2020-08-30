@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -18,6 +18,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
+import { connect } from 'react-redux';
+import TodoList from '../components/todoList';
+import { addTodo } from '../redux/actions';
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -49,19 +52,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function AddToDo() {
+function AddToDo({ addTodo }) {
     const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(true);
+    const [checked, setChecked] = useState([]);
+    const [completed, setCompleted] = useState([]);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
+    const handleClickOpen = () => setOpen(true);
 
-    const handleClose = () => {
-        setOpen(false);
-    };
-
-    const [checked, setChecked] = React.useState([0]);
+    const handleClose = () => setOpen(false);
 
     const handleToggle = (value) => () => {
         const currentIndex = checked.indexOf(value);
@@ -72,9 +71,17 @@ function AddToDo() {
         } else {
             newChecked.splice(currentIndex, 1);
         }
-
         setChecked(newChecked);
     };
+
+    const [addToDoValue, setToDoValue] = useState('');
+
+    const handleOnTextBoxChange = e => setToDoValue(e.target.value);
+
+    const handleAddToDoValue = () => {
+        setToDoValue('');
+        addTodo(addToDoValue);
+    }
 
     return (
         <div>
@@ -90,14 +97,16 @@ function AddToDo() {
                 <DialogContent dividers>
 
                     <div className={classes.root}>
-                        <div style={{ alignItems:"center" }}>
+                        <div style={{ alignItems: "center" }}>
                             <TextField
-                                label="Add A ToDo"
+                                label="Add a ToDo"
                                 style={{ margin: 8, width: '60ch' }}
                                 margin="normal"
+                                onChange={handleOnTextBoxChange}
+                                value={addToDoValue}
                             />
-                           
-                            <IconButton edge="end" aria-label="addToDo" style={{ fontSize: "20px" }} >
+
+                            <IconButton edge="end" aria-label="addToDo" style={{ fontSize: "20px" }} onClick={handleAddToDoValue} >
                                 <NoteAddIcon />
                             </IconButton>
                         </div>
@@ -109,7 +118,7 @@ function AddToDo() {
                                     <Typography gutterBottom variant="h5">
                                         Incomplete Items
                                 </Typography>
-
+                                    <TodoList />
                                     <List className={classes.root}>
                                         {[0, 1, 2, 3].map((value) => {
                                             const labelId = `checkbox-list-label-${value}`;
@@ -179,5 +188,4 @@ function AddToDo() {
     );
 }
 
-
-export default AddToDo;
+export default connect(null, { addTodo })(AddToDo)
