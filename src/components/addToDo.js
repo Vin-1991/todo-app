@@ -51,11 +51,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function AddToDo({ todos, addTodo, toggleTodo, deleteTodo }) {
-
+function AddToDo({ todos, addTodo, toggleTodo, deleteTodo, ...props }) {
     const classes = useStyles();
     console.log(todos);
-    //const bucketDataFromProps = props.bucketData;
+    const bucketDataFromProps = props.bucketData;
     const [checked, setChecked] = useState([]);
     const [addToDoValue, setToDoValue] = useState('');
     const [tododata, setToDoData] = useState([]);
@@ -95,9 +94,9 @@ function AddToDo({ todos, addTodo, toggleTodo, deleteTodo }) {
 
     return (
         <>
-            <Dialog fullWidth maxWidth="sm" open={true} scroll="paper">
-                <DialogTitle id="scroll-dialog-title">
-                    <IconButton aria-label="close" className={classes.closeButton} >
+            <Dialog fullWidth maxWidth="sm" open={props.openDialog} scroll="paper">
+                <DialogTitle id="scroll-dialog-title">{props.bucketData.bucketName}
+                    <IconButton aria-label="close" className={classes.closeButton} onClick={props.closeDialog}  >
                         <CloseIcon />
                     </IconButton>
                 </DialogTitle>
