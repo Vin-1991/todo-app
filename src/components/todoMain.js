@@ -42,15 +42,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ToDoMain({ todoBuckets, editTodoBucket }) {
-    console.log(editTodoBucket);
     const classes = useStyles();
-    const [openModal, setOpenModal] = useState(true);
+    const [openModal, setOpenModal] = useState(false);
     const [getBucketData, setBucketData] = useState([]);
 
     const renderBucketData = (bucketData) => {
-        editTodoBucket(bucketData);
+        //editTodoBucket(bucketData);
         setBucketData(bucketData);
+        setOpenModal(true);
     }
+
+    const handleClose = () => setOpenModal(false);
 
     return (
         <>
@@ -66,7 +68,7 @@ function ToDoMain({ todoBuckets, editTodoBucket }) {
                             <Grid container spacing={2} justify="center">
                                 <Grid item>
                                     <AddBucket />
-                                    <AddToDo bucketData={getBucketData} />
+                                    {getBucketData && <AddToDo bucketData={getBucketData} openDialog={openModal} closeDialog={handleClose} />}
                                 </Grid>
                             </Grid>
                         </div>

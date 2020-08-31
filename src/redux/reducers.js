@@ -15,10 +15,10 @@ export const todos = (state = initialTodoState, action) => {
                         ...state.data,
                         [state.nextId]: {
                             todoName: action.payload.todoName,
-                            completed: false
+                            completed: false,
+                            deleted: false
                         },
                     },
-
                     nextId: state.nextId + 1
                 }
             )
@@ -40,9 +40,16 @@ export const todos = (state = initialTodoState, action) => {
         }
 
         case DELETE_TODO:
+            console.log(action.payload);
             return {
                 ...state,
-                ...state.data.filter((item, index) => index !== state.data[action.payload.id])
+                data: {
+                    ...state.data,
+                    [action.payload.id]: {
+                        ...state.data[action.payload.id],
+                        deleted: !(state.data[action.payload.id].deleted)
+                    }
+                }
             }
 
         default: {

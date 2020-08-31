@@ -8,7 +8,7 @@ import { todoBuckets } from '../redux/bucketReducers';
 
 const filter = createFilterOptions();
 
-function AddToDoBucket({ todoBuckets, addTodoBucket }) {
+function AddToDoBucket({ addTodoBucket }) {
 
     const [value, setValue] = useState(null);
 
@@ -78,8 +78,6 @@ function AddToDoBucket({ todoBuckets, addTodoBucket }) {
                         <TextField {...params} label="Add a new bucket" variant="outlined" />
                     )}
                 />
-
-
             </div>
         </>
     );

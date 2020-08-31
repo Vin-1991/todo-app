@@ -28,14 +28,14 @@ export const todoBuckets = (state = initialTodoBucketState, action) => {
         }
 
         case EDIT_TODO_BUCKET: {
+            let newList = state.data[action.payload.id];
             return (
                 {
                     ...state,
                     data: {
                         ...state.data,
-                        [action.payload.id]: {
-                            ...state.data[action.payload.id],
-                            filteredData: state.data[action.payload.id]
+                        [action.payload.id]: {                            
+                            
                         }
                     }
                 }

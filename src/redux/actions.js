@@ -1,4 +1,4 @@
-import { ADD_TODO_BUCKET, EDIT_TODO_BUCKET, DELETE_TODO_BUCKET, OPEN_MODAL } from './actionTypes'
+import { ADD_TODO_BUCKET, EDIT_TODO_BUCKET, DELETE_TODO_BUCKET } from './actionTypes'
 import { ADD_TODO, TOGGLE_TODO, DELETE_TODO } from './actionTypes'
 
 
@@ -33,20 +33,10 @@ export const deleteTodoBucket = (id) => (
 )
 
 
-export const open_modal = (currentState, bucketData) => (
-    {
-        type: OPEN_MODAL,
-        payload: {
-            currentState,
-            bucketData
-        }
-    }
-)
-
 export const addTodo = (todoName) => (
     {
         type: ADD_TODO,
-        payload: {
+        payload: {            
             todoName
         }
     }

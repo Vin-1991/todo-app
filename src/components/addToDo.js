@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
@@ -19,8 +18,9 @@ import TextField from '@material-ui/core/TextField';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import { connect } from 'react-redux';
 import TodoList from '../components/todoList';
-import { addTodo, editTodoBucket } from '../redux/actions';
-import { todoBuckets } from '../redux/bucketReducers';
+import { addTodo, toggleTodo, deleteTodo } from '../redux/actions';
+import { todos } from '../redux/reducers';
+import _ from 'underscore';
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -51,28 +51,15 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function AddToDo({ }) {
+function AddToDo({ todos, addTodo, toggleTodo, deleteTodo }) {
+
     const classes = useStyles();
-    const [open, setOpen] = useState(false);
+    console.log(todos);
+    //const bucketDataFromProps = props.bucketData;
     const [checked, setChecked] = useState([]);
     const [addToDoValue, setToDoValue] = useState('');
-    const [tododata, setToDoData] = useState([
-        {
-            num: 1,
-            name: 'hello'
-        },
-        {
-            num: 2,
-            name: 'world'
-        },
-        {
-            num: 3,
-            name: 'test'
-        }]);
-
-    const handleClickOpen = () => setOpen(true);
-
-    const handleClose = () => setOpen(false);
+    const [tododata, setToDoData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
 
     const handleToggle = (value) => () => {
         const currentIndex = checked.indexOf(value);
@@ -97,35 +84,37 @@ function AddToDo({ }) {
     }
 
     const handleAddToDoValue = () => {
-        setToDoValue('');
         addTodo(addToDoValue);
+        setFilteredData(_.pick(todos.data, (todo) => todo.completed));
+        setToDoValue('');
+    }
+
+    const filterData = () => {
+        const dt = _.pick(todos.data, (todo) => !todo.completed);
     }
 
     return (
         <>
-            <Dialog fullWidth maxWidth="sm" open={open} scroll="paper">
+            <Dialog fullWidth maxWidth="sm" open={true} scroll="paper">
                 <DialogTitle id="scroll-dialog-title">
-                    <IconButton aria-label="close" className={classes.closeButton} onClick={handleClose}>
+                    <IconButton aria-label="close" className={classes.closeButton} >
                         <CloseIcon />
                     </IconButton>
                 </DialogTitle>
                 <DialogContent dividers>
-
                     <div className={classes.root}>
-
                         <div className={classes.section1}>
-
                             <TextField
                                 label="Add a ToDo"
+                                value={addToDoValue}
+                                onChange={(e) => setToDoValue(e.target.value)}
                                 style={{
                                     marginTop: "-16px", width: '50ch'
                                 }}
                             />
-
                             <IconButton aria-label="addToDo" onClick={handleAddToDoValue} >
                                 <NoteAddIcon />
                             </IconButton>
-
                             <Grid container alignItems="center">
                                 <Grid item xs>
                                     <Typography gutterBottom variant="h5">
@@ -133,9 +122,8 @@ function AddToDo({ }) {
                                 </Typography>
                                     <TodoList />
                                     <List className={classes.root}>
-                                        {tododata.map((item, index) => {
+                                        {_.keys(todos.data).map((item, index) => {
                                             const labelId = `checkbox-list-label-${index}`;
-
                                             return (
                                                 <ListItem key={index} role={undefined} dense button>
                                                     <ListItemIcon>
@@ -145,16 +133,16 @@ function AddToDo({ }) {
                                                             tabIndex={-1}
                                                             disableRipple
                                                             inputProps={{ 'aria-labelledby': labelId }}
-                                                            onClick={handleToggle(index)}
+                                                            onClick={() => toggleTodo(item)}
                                                         />
                                                     </ListItemIcon>
                                                     <TextField
                                                         style={{ marginTop: "-16px", width: '60ch' }}
                                                         onChange={handleOnTextBoxChange}
-                                                        key={index} value={item.name} id={index.toString()}
+                                                        key={index} value={todos.data[item].todoName} id={index.toString()}
                                                     />
                                                     <ListItemSecondaryAction>
-                                                        <IconButton edge="end" aria-label="deleteToDo">
+                                                        <IconButton edge="end" aria-label="deleteToDo" onClick={() => deleteTodo(item)} >
                                                             <DeleteForeverIcon />
                                                         </IconButton>
                                                     </ListItemSecondaryAction>
@@ -170,26 +158,26 @@ function AddToDo({ }) {
                         <div className={classes.section2}>
                             <Typography gutterBottom variant="h5">
                                 Completed Items
-        </Typography>
+                            </Typography>
                             <List className={classes.root}>
-                                {[0, 1].map((value) => {
-                                    const labelId = `checkbox-list-label-${value}`;
+                                {_.keys(todos.data).map((item, index) => {
+                                    const labelId = `checkbox-list-label-${index}`;
                                     return (
-                                        <ListItem key={value} role={undefined} dense button >
+                                        <ListItem key={index} role={undefined} dense button >
                                             <ListItemIcon>
                                                 <Checkbox
                                                     edge="start"
-                                                    checked={checked.indexOf(value) !== -1}
+                                                    checked={checked.indexOf(index) !== -1}
                                                     tabIndex={-1}
                                                     disableRipple
                                                     inputProps={{ 'aria-labelledby': labelId }}
-                                                    onClick={handleToggle(value)}
+                                                    onClick={() => toggleTodo(item)}
                                                 />
                                             </ListItemIcon>
                                             <TextField
                                                 style={{ marginTop: "-16px", width: '60ch' }}
-                                                onChange={handleOnTextBoxChange}
-                                                value={addToDoValue}
+                                                key={index} value={todos.data[item].todoName} id={index.toString()}
+
                                             />
                                             <ListItemSecondaryAction>
                                                 <IconButton aria-label="deleteToDo">
@@ -209,4 +197,4 @@ function AddToDo({ }) {
     );
 }
 
-export default connect(todoBuckets, { addTodo })(AddToDo)
+export default connect(todos, { addTodo, toggleTodo, deleteTodo })(AddToDo)
