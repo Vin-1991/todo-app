@@ -11,8 +11,9 @@ import _ from 'underscore';
 const filter = createFilterOptions();
 
 function AddToDoBucket({ todoBuckets, addTodoBucket }) {
-
+    
     const [value, setValue] = useState(null);
+
     const getCurrentDateTime = () => {
         const currentdate = new Date();
         const datetime = currentdate.getDate() + "/"
@@ -21,7 +22,6 @@ function AddToDoBucket({ todoBuckets, addTodoBucket }) {
             + currentdate.getHours() + ":"
             + currentdate.getMinutes() + ":"
             + currentdate.getSeconds();
-
         return datetime;
     }
 

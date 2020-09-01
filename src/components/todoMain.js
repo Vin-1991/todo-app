@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { editTodoBucket } from '../redux/actions';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import IconButton from '@material-ui/core/IconButton';
+import { deleteTodoBucket } from '../redux/actions';
 import { todoBuckets } from '../redux/bucketReducers';
 import { connect } from 'react-redux';
-import _ from 'underscore';
 import AddBucket from '../components/addBucket';
 import AddToDo from '../components/addToDo';
 
@@ -41,13 +44,12 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function ToDoMain({ todoBuckets, editTodoBucket }) {
+function ToDoMain({ todoBuckets, deleteTodoBucket }) {
     const classes = useStyles();
     const [openModal, setOpenModal] = useState(false);
     const [getBucketData, setBucketData] = useState([]);
 
     const renderBucketData = (bucketData) => {
-        //editTodoBucket(bucketData);
         setBucketData(bucketData);
         setOpenModal(true);
     }
@@ -76,23 +78,30 @@ function ToDoMain({ todoBuckets, editTodoBucket }) {
                 </div>
                 <Container className={classes.cardGrid} maxWidth="xl">
                     <Grid container spacing={3}>
-                        {_.keys(todoBuckets.data).map((card) => (
-                            <Grid item key={card} xs={12} sm={6} md={3}>
-                                <Card className={classes.card} onClick={() => renderBucketData(todoBuckets.data[card])}>
-                                    <CardContent className={classes.cardContent}>
-                                        <Typography gutterBottom variant="h5" component="h2" align="center" >
-                                            {todoBuckets.data[card].bucketName}
-                                        </Typography>
-                                        <Typography>
-                                            InCompeted : {todoBuckets.data[card].incompeleteCount}
-                                        </Typography>
-                                        <Typography>
-                                            Competed : {todoBuckets.data[card].completedCount}
-                                        </Typography>
-                                        <Typography>
-                                            Created at : {todoBuckets.data[card].createdTime}
-                                        </Typography>
-                                    </CardContent>
+                        {todoBuckets.map((card) => (
+                            <Grid item key={card.bucketId} xs={12} sm={6} md={3}>
+                                <Card className={classes.card} >
+                                    <CardActionArea>
+                                        <CardContent className={classes.cardContent} onClick={() => renderBucketData(card)}>
+                                            <Typography gutterBottom variant="h5" component="h2" align="center" >
+                                                {card.bucketName}
+                                            </Typography>
+                                            <Typography>
+                                                InCompeted : {card.incompeleteCount}
+                                            </Typography>
+                                            <Typography>
+                                                Competed : {card.completedCount}
+                                            </Typography>
+                                            <Typography>
+                                                Created at : {card.createdTime}
+                                            </Typography>
+                                        </CardContent>
+                                    </CardActionArea>
+                                    <CardActions style={{ alignItems: "center" }} >
+                                        <IconButton aria-label="deleteBucket" onClick={() => deleteTodoBucket(card.bucketId)} >
+                                            <DeleteForeverIcon />
+                                        </IconButton>
+                                    </CardActions>
                                 </Card>
                             </Grid>
                         ))}
@@ -104,4 +113,4 @@ function ToDoMain({ todoBuckets, editTodoBucket }) {
     );
 }
 
-export default connect(todoBuckets, { editTodoBucket })(ToDoMain);
+export default connect(todoBuckets, { deleteTodoBucket })(ToDoMain);
