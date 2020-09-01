@@ -50,7 +50,7 @@ function AddToDoBucket({ todoBuckets, addTodoBucket }) {
         if (params.inputValue !== '') {
             filtered.push({
                 inputValue: params.inputValue,
-                bucketName: `Add "${params.inputValue}"`,
+                bucketName: `Add bucket "${params.inputValue}"`,
             });
 
         }
@@ -96,7 +96,7 @@ function AddToDoBucket({ todoBuckets, addTodoBucket }) {
 
     return (
         <>
-            <div style={{ width: 300 }}>
+            <div>
                 <Autocomplete
                     value={selectedValue}
                     onChange={handleAutoCompleteChange}
@@ -107,8 +107,9 @@ function AddToDoBucket({ todoBuckets, addTodoBucket }) {
                     options={uniqueBuckets}
                     getOptionSelected={(option, value) => option === value}
                     getOptionLabel={handleGetOptionLabel}
-                    style={{ width: 300 }}
+                    style={{ width: 500 }}
                     freeSolo
+                    fullWidth
                     renderInput={(params) => (
                         <TextField {...params} label="Add a new bucket" variant="outlined" placeholder="Search or Add a Bucket.." />
                     )}

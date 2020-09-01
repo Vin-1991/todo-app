@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -10,16 +9,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import IconButton from '@material-ui/core/IconButton';
-import { deleteTodoBucket, deleteAllTodos } from '../redux/actions';
-import { todoBuckets } from '../redux/bucketReducers';
+import Divider from '@material-ui/core/Divider';
 import { connect } from 'react-redux';
 import AddBucket from '../components/addBucket';
 import AddToDo from '../components/addToDo';
+import { deleteTodoBucket, deleteAllTodos } from '../redux/actions';
+import { todoBuckets } from '../redux/bucketReducers';
 
 const useStyles = makeStyles((theme) => ({
-    icon: {
-        marginRight: theme.spacing(2),
-    },
     heroContent: {
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(8, 0, 6),
@@ -37,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
     },
     cardMedia: {
-        paddingTop: '56.25%', // 16:9
+        paddingTop: '60%',
     },
     cardContent: {
         flexGrow: 1,
@@ -45,7 +42,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ToDoMain({ todoBuckets, deleteTodoBucket, deleteAllTodos }) {
+
     const classes = useStyles();
+
     const [openModal, setOpenModal] = useState(false);
     const [getBucketData, setBucketData] = useState([]);
 
@@ -54,7 +53,7 @@ function ToDoMain({ todoBuckets, deleteTodoBucket, deleteAllTodos }) {
         setOpenModal(true);
     }
 
-    const handleClose = () => setOpenModal(false);
+    const handleClose = _ => setOpenModal(false);
 
     return (
         <>
@@ -68,7 +67,7 @@ function ToDoMain({ todoBuckets, deleteTodoBucket, deleteAllTodos }) {
 
                         <div className={classes.heroButtons}>
                             <Grid container spacing={2} justify="center">
-                                <Grid item>
+                                <Grid item >
                                     <AddBucket />
                                     {openModal === true && <AddToDo bucketData={getBucketData} openDialog={openModal} closeDialog={handleClose} />}
                                 </Grid>
@@ -76,7 +75,7 @@ function ToDoMain({ todoBuckets, deleteTodoBucket, deleteAllTodos }) {
                         </div>
                     </Container>
                 </div>
-                <Container className={classes.cardGrid} maxWidth="xl">
+                {todoBuckets.length > 0 && < Container className={classes.cardGrid} maxWidth="xl">
                     <Grid container spacing={3}>
                         {todoBuckets.map((card) => (
                             <Grid item key={card.bucketId} xs={12} sm={6} md={3}>
@@ -87,7 +86,7 @@ function ToDoMain({ todoBuckets, deleteTodoBucket, deleteAllTodos }) {
                                                 {card.bucketName}
                                             </Typography>
                                             <Typography>
-                                                InCompeted : {card.incompeleteCount}
+                                                InCompete : {card.incompeleteCount}
                                             </Typography>
                                             <Typography>
                                                 Competed : {card.completedCount}
@@ -97,18 +96,18 @@ function ToDoMain({ todoBuckets, deleteTodoBucket, deleteAllTodos }) {
                                             </Typography>
                                         </CardContent>
                                     </CardActionArea>
-                                    <CardActions>
+                                    <Divider variant="middle" />
+                                    <Typography align="center" >
                                         <IconButton aria-label="deleteBucket" onClick={() => { deleteTodoBucket(card.bucketId); deleteAllTodos(card.bucketId); }}>
                                             <DeleteForeverIcon />
                                         </IconButton>
-                                    </CardActions>
+                                    </Typography>
                                 </Card>
                             </Grid>
                         ))}
                     </Grid>
-                </Container>
+                </Container>}
             </main>
-
         </>
     );
 }

@@ -1,9 +1,11 @@
-import { ADD_TODO_BUCKET, DELETE_TODO_BUCKET, ADD_TODO_BUCKET_COUNT } from './actionTypes'
+import { ADD_TODO_BUCKET, DELETE_TODO_BUCKET, ADD_TODO_BUCKET_COUNT } from './actionTypes';
 
 const initialTodoBucketState = []
 
 export const todoBuckets = (state = initialTodoBucketState, action) => {
     switch (action.type) {
+
+        //Add Bucket ToDo Reducer
         case ADD_TODO_BUCKET: {
             return [
                 ...state, {
@@ -16,11 +18,13 @@ export const todoBuckets = (state = initialTodoBucketState, action) => {
             ]
         }
 
+        //Delete Bucket ToDo Reducer
         case DELETE_TODO_BUCKET: {
             const numIndex = parseInt(action.payload.bucketId);
             return state.filter(todo => todo.bucketId !== numIndex);
         }
 
+        //Add Bucket ToDo Count Reducer
         case ADD_TODO_BUCKET_COUNT: {
             return state.map(todo =>
                 (todo.bucketId === action.payload.bucketId)

@@ -14,11 +14,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import { connect } from 'react-redux';
-import { addTodo, toggleTodo, deleteTodo, editTodo, addTodoBucketCount } from '../redux/actions';
-import { todos } from '../redux/reducers';
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
+import { connect } from 'react-redux';
+import { addTodo, toggleTodo, deleteTodo, editTodo, addTodoBucketCount } from '../redux/actions';
+import { todos } from '../redux/todoReducers';
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -63,9 +63,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function AddToDo({ todoBuckets, todos, addTodo, toggleTodo, deleteTodo, editTodo, addTodoBucketCount, ...props }) {
+function AddToDo({ todos, addTodo, toggleTodo, deleteTodo, editTodo, addTodoBucketCount, ...props }) {
 
     const classes = useStyles();
+
     const [checked] = useState([]);
     const [addToDoValue, setToDoValue] = useState('');
     const [inCompleteCount, setInCompleteCount] = useState(0);
@@ -88,7 +89,6 @@ function AddToDo({ todoBuckets, todos, addTodo, toggleTodo, deleteTodo, editTodo
         }
     }, [inCompleteCount, completeCount, renderValues, addTodoBucketCount, props.bucketData.bucketId])
 
-
     return (
         <>
             <Dialog fullWidth maxWidth="sm" open={props.openDialog} scroll="paper">
@@ -105,9 +105,7 @@ function AddToDo({ todoBuckets, todos, addTodo, toggleTodo, deleteTodo, editTodo
                                 value={addToDoValue}
                                 onChange={(e) => setToDoValue(e.target.value)}
                                 variant="outlined"
-                                style={{
-                                    width: '100%'
-                                }}
+                                style={{ width: '100%' }}
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">
@@ -120,12 +118,11 @@ function AddToDo({ todoBuckets, todos, addTodo, toggleTodo, deleteTodo, editTodo
                             />
                             <Divider style={{ marginTop: '1em' }} variant="middle" />
                         </div>
-
                         <div className={classes.section1}>
                             {inCompleteCount > 0 &&
                                 <div>
                                     <Typography gutterBottom variant="h6">
-                                        Incomplete {inCompleteCount > 1 ? 'Items' : 'Item'} - {inCompleteCount}
+                                        {inCompleteCount} - incomplete {inCompleteCount > 1 ? 'items' : 'item'}
                                     </Typography>
                                     <List className={classes.root}>
                                         {todos.length > 0 && todos.filter((item, index) => !item.completed && item.bucketId === props.bucketData.bucketId).map((item, index) => {
@@ -158,10 +155,9 @@ function AddToDo({ todoBuckets, todos, addTodo, toggleTodo, deleteTodo, editTodo
                                     </List>
                                 </div>}
                         </div>
-
                         {completeCount > 0 && <div className={classes.section2}>
                             <Typography gutterBottom variant="h6">
-                                Completed {completeCount > 1 ? 'Items' : 'Item'} - {completeCount}
+                                {completeCount} - completed {completeCount > 1 ? 'items' : 'item'}
                             </Typography>
                             <List className={classes.root}>
                                 {todos.length > 0 && todos.filter((item, index) => item.completed && item.bucketId === props.bucketData.bucketId).map((item, index) => {
@@ -193,7 +189,6 @@ function AddToDo({ todoBuckets, todos, addTodo, toggleTodo, deleteTodo, editTodo
                                 })}
                             </List>
                         </div>}
-
                     </div>
                 </DialogContent>
             </Dialog>
