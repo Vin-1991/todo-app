@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import Grid from '@material-ui/core/Grid';
@@ -8,8 +8,6 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Checkbox from '@material-ui/core/Checkbox';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -17,12 +15,10 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import { connect } from 'react-redux';
-import TodoList from '../components/todoList';
 import { addTodo, toggleTodo, deleteTodo, editTodo } from '../redux/actions';
 import { todos } from '../redux/reducers';
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
-import { todoBuckets } from '../redux/bucketReducers';
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -76,37 +72,29 @@ function AddToDo({ todoBuckets, todos, addTodo, toggleTodo, deleteTodo, editTodo
     console.log(todos);
     const [checked, setChecked] = useState([]);
     const [addToDoValue, setToDoValue] = useState('');
-    const [tododata, setToDoData] = useState([]);
-
-
-    const handleOnTextBoxChange = e => {
-        const { value, id } = e.target;
-        const newArray = [...tododata];
-        newArray[id] = {
-            ...newArray[id],
-            name: value
-        }
-        setToDoData(newArray);
-    }
+    const [inCompleteCount, setInCompleteCount] = useState(0);
+    const [completeCount, setCompleteCount] = useState(0);
 
     const handleAddToDoValue = () => {
         addTodo(props.bucketData.bucketId, addToDoValue);
         setToDoValue('');
     }
 
-    const renderValues = () => {
-        let bucketDetails = todoBuckets.filter((item, index) => item.bucketId === props.bucketData.bucketId)[0];
-        let incompletedCount = todos.filter((item, index) => !item.completed && item.bucketId === props.bucketData.bucketId);
-        let completedCount = todos.filter((item, index) => item.completed && item.bucketId === props.bucketData.bucketId);
-        bucketDetails.incompeleteCount = incompletedCount.length;
-        bucketDetails.completedCount = completedCount.length;
-    }
+    const renderValues = useCallback(() => {
+        setInCompleteCount(todos.filter((item, index) => !item.completed && item.bucketId === props.bucketData.bucketId).length);
+        setCompleteCount(todos.filter((item, index) => item.completed && item.bucketId === props.bucketData.bucketId).length);
+    }, [todos, props.bucketData.bucketId])
+
+    useEffect(() => {
+        renderValues();
+    }, [inCompleteCount, completeCount, renderValues])
+
 
     return (
         <>
             <Dialog fullWidth maxWidth="sm" open={props.openDialog} scroll="paper">
                 <DialogTitle id="scroll-dialog-title">{props.bucketData.bucketName}
-                    <IconButton aria-label="close" className={classes.closeButton} onClick={props.closeDialog}  >
+                    <IconButton aria-label="close" className={classes.closeButton} onClick={props.closeDialog} >
                         <CloseIcon />
                     </IconButton>
                 </DialogTitle>
@@ -124,14 +112,13 @@ function AddToDo({ todoBuckets, todos, addTodo, toggleTodo, deleteTodo, editTodo
                             <IconButton aria-label="addToDo" disabled={addToDoValue === ''} onClick={handleAddToDoValue} >
                                 <NoteAddIcon />
                             </IconButton>
-                            <Grid container alignItems="center">
+                            {inCompleteCount > 0 && <Grid container alignItems="center">
                                 <Grid item xs>
-                                    <Typography gutterBottom variant="h5">
-                                        Incomplete Items
-                                </Typography>
-                                    <TodoList />
+                                    <Typography gutterBottom variant="h6">
+                                        Incomplete {inCompleteCount > 1 ? 'Items' : 'Item'} - {inCompleteCount}
+                                    </Typography>
                                     <List className={classes.root}>
-                                        {todos.filter((item, index) => !item.completed && item.bucketId === props.bucketData.bucketId).map((item, index) => {
+                                        {todos.length > 0 && todos.filter((item, index) => !item.completed && item.bucketId === props.bucketData.bucketId).map((item, index) => {
                                             const labelId = `checkbox-list-label-${index}`;
                                             return (
                                                 <ListItem key={index} role={undefined}>
@@ -155,31 +142,21 @@ function AddToDo({ todoBuckets, todos, addTodo, toggleTodo, deleteTodo, editTodo
                                                             <DeleteForeverIcon />
                                                         </IconButton>
                                                     </Paper>
-                                                    {/*<TextField
-                                                        style={{ marginTop: "-16px", width: '60ch' }}
-                                                        onChange={() => editTodo(item.id)}
-                                                        key={index} value={item.todoName} id={index.toString()}
-                                                    />
-                                                    <ListItemSecondaryAction>
-                                                        <IconButton edge="end" aria-label="deleteToDo" onClick={() => deleteTodo(item.id)} >
-                                                            <DeleteForeverIcon />
-                                                        </IconButton>
-                                                    </ListItemSecondaryAction>*/}
                                                 </ListItem>
                                             );
                                         })}
                                     </List>
                                 </Grid>
-                            </Grid>
-
+                                <Divider variant="middle" />
+                            </Grid>}
                         </div>
-                        <Divider variant="middle" />
-                        <div className={classes.section2}>
-                            <Typography gutterBottom variant="h5">
-                                Completed Items
+
+                        {completeCount > 0 && <div className={classes.section2}>
+                            <Typography gutterBottom variant="h6">
+                                Completed {completeCount > 1 ? 'Items' : 'Item'} - {completeCount}
                             </Typography>
                             <List className={classes.root}>
-                                {todos.filter((item, index) => item.completed && item.bucketId === props.bucketData.bucketId).map((item, index) => {
+                                {todos.length > 0 && todos.filter((item, index) => item.completed && item.bucketId === props.bucketData.bucketId).map((item, index) => {
                                     const labelId = `checkbox-list-label-${index}`;
                                     return (
                                         <ListItem key={index} role={undefined}>
@@ -207,7 +184,7 @@ function AddToDo({ todoBuckets, todos, addTodo, toggleTodo, deleteTodo, editTodo
                                     );
                                 })}
                             </List>
-                        </div>
+                        </div>}
 
                     </div>
                 </DialogContent>
