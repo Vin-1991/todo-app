@@ -1,4 +1,4 @@
-import { ADD_TODO, TOGGLE_TODO, DELETE_TODO, EDIT_TODO } from './actionTypes'
+import { ADD_TODO, TOGGLE_TODO, DELETE_TODO, EDIT_TODO, DELETE_ALL_TODOS } from './actionTypes'
 
 const initialTodoState = []
 
@@ -13,20 +13,6 @@ export const todos = (state = initialTodoState, action) => {
                     completed: false,
                 }
             ]
-            //    return (
-            //        {
-            //            ...state,
-            //            data: {
-            //                ...state.data,
-            //                [state.nextId]: {
-            //                    bucketId: action.payload.bucketId,
-            //                    todoName: action.payload.todoName,
-            //                    completed: false,
-            //                },
-            //            },
-            //            nextId: state.nextId + 1
-            //        }
-            //    )
         }
         case TOGGLE_TODO: {
             return state.map(todo =>
@@ -34,18 +20,6 @@ export const todos = (state = initialTodoState, action) => {
                     ? { ...todo, completed: !todo.completed }
                     : todo
             )
-            //return (
-            //    {
-            //        ...state,
-            //        data: {
-            //            ...state.data,
-            //            [action.payload.id]: {
-            //                ...state.data[action.payload.id],
-            //                completed: !(state.data[action.payload.id].completed)
-            //            }
-            //        }
-            //    }
-            //)
         }
 
         case EDIT_TODO: {
@@ -61,16 +35,10 @@ export const todos = (state = initialTodoState, action) => {
             return state.filter(todo => todo.id !== numIndex)
         }
 
-        //return {
-        //    ...state,
-        //    data: {
-        //        ...state.data,
-        //        [action.payload.id]: {
-        //            ...state.data[action.payload.id],
-        //            ...state.data.filter((item, index) => index !== state.data[action.payload.id])
-        //        }
-        //    }
-        //}
+        case DELETE_ALL_TODOS: {
+            const numIndex = parseInt(action.payload.bucketId)
+            return state.filter(todo => todo.bucketId !== numIndex)
+        }
 
         default: {
             return state

@@ -1,0 +1,9 @@
+.MuiCheckbox-colorSecondary.Mui-checked {
+    color: limegreen !important;
+}
+
+
+.MuiListItem-gutters {
+    padding-left: 0;
+    padding-right: 0;
+}

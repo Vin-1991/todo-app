@@ -10,7 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import IconButton from '@material-ui/core/IconButton';
-import { deleteTodoBucket } from '../redux/actions';
+import { deleteTodoBucket, deleteAllTodos } from '../redux/actions';
 import { todoBuckets } from '../redux/bucketReducers';
 import { connect } from 'react-redux';
 import AddBucket from '../components/addBucket';
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function ToDoMain({ todoBuckets, deleteTodoBucket }) {
+function ToDoMain({ todoBuckets, deleteTodoBucket, deleteAllTodos }) {
     const classes = useStyles();
     const [openModal, setOpenModal] = useState(false);
     const [getBucketData, setBucketData] = useState([]);
@@ -70,7 +70,7 @@ function ToDoMain({ todoBuckets, deleteTodoBucket }) {
                             <Grid container spacing={2} justify="center">
                                 <Grid item>
                                     <AddBucket />
-                                    {getBucketData && <AddToDo bucketData={getBucketData} openDialog={openModal} closeDialog={handleClose} />}
+                                    {openModal === true && <AddToDo bucketData={getBucketData} openDialog={openModal} closeDialog={handleClose} />}
                                 </Grid>
                             </Grid>
                         </div>
@@ -97,8 +97,8 @@ function ToDoMain({ todoBuckets, deleteTodoBucket }) {
                                             </Typography>
                                         </CardContent>
                                     </CardActionArea>
-                                    <CardActions style={{ alignItems: "center" }} >
-                                        <IconButton aria-label="deleteBucket" onClick={() => deleteTodoBucket(card.bucketId)} >
+                                    <CardActions>
+                                        <IconButton aria-label="deleteBucket" onClick={() => { deleteTodoBucket(card.bucketId); deleteAllTodos(card.bucketId); }}>
                                             <DeleteForeverIcon />
                                         </IconButton>
                                     </CardActions>
@@ -113,4 +113,4 @@ function ToDoMain({ todoBuckets, deleteTodoBucket }) {
     );
 }
 
-export default connect(todoBuckets, { deleteTodoBucket })(ToDoMain);
+export default connect(todoBuckets, { deleteTodoBucket, deleteAllTodos })(ToDoMain);

@@ -1,5 +1,5 @@
-import { ADD_TODO_BUCKET, EDIT_TODO_BUCKET, DELETE_TODO_BUCKET } from './actionTypes'
-import { ADD_TODO, TOGGLE_TODO, DELETE_TODO, EDIT_TODO } from './actionTypes'
+import { ADD_TODO_BUCKET, DELETE_TODO_BUCKET, ADD_TODO_BUCKET_COUNT } from './actionTypes'
+import { ADD_TODO, TOGGLE_TODO, DELETE_TODO, EDIT_TODO, DELETE_ALL_TODOS } from './actionTypes'
 
 
 let ToDo = 1;
@@ -18,15 +18,6 @@ export const addTodoBucket = (bucketName, incompeleteCount, completedCount, crea
     }
 )
 
-export const editTodoBucket = (id) => (
-    {
-        type: EDIT_TODO_BUCKET,
-        payload: {
-            id
-        }
-    }
-)
-
 export const deleteTodoBucket = (bucketId) => (
     {
         type: DELETE_TODO_BUCKET,
@@ -35,6 +26,18 @@ export const deleteTodoBucket = (bucketId) => (
         }
     }
 )
+
+export const addTodoBucketCount = (bucketId, completedCount, incompeleteCount) => (
+    {
+        type: ADD_TODO_BUCKET_COUNT,
+        payload: {
+            bucketId,
+            completedCount,
+            incompeleteCount
+        }
+    }
+)
+
 
 export const addTodo = (bucketId, todoName) => (
     {
@@ -66,11 +69,20 @@ export const editTodo = (id, todoName) => (
     }
 )
 
-export const deleteTodo = (id) => (
+export const deleteTodo = (id, ) => (
     {
         type: DELETE_TODO,
         payload: {
             id
+        }
+    }
+)
+
+export const deleteAllTodos = (bucketId) => (
+    {
+        type: DELETE_ALL_TODOS,
+        payload: {
+            bucketId
         }
     }
 )

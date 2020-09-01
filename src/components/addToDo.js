@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
-import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
@@ -14,8 +13,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import { connect } from 'react-redux';
-import { addTodo, toggleTodo, deleteTodo, editTodo } from '../redux/actions';
+import { addTodo, toggleTodo, deleteTodo, editTodo, addTodoBucketCount } from '../redux/actions';
 import { todos } from '../redux/reducers';
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
@@ -25,15 +25,12 @@ const useStyles = makeStyles((theme) => ({
         position: 'relative',
     },
     title: {
-        marginLeft: theme.spacing(2),
-        flex: 1,
+        backgroundColor: '#3f51b5',
+        color: '#fff'
     },
     root: {
         width: '100%',
         backgroundColor: theme.palette.background.paper,
-    },
-    chip: {
-        margin: theme.spacing(0.5),
     },
     section1: {
         margin: theme.spacing(2),
@@ -62,15 +59,14 @@ const useStyles = makeStyles((theme) => ({
         padding: '2px 4px',
         display: 'flex',
         alignItems: 'center',
-        width: 500,
+        width: '100%',
     },
 }));
 
-function AddToDo({ todoBuckets, todos, addTodo, toggleTodo, deleteTodo, editTodo, ...props }) {
-    console.log(todoBuckets);
+function AddToDo({ todoBuckets, todos, addTodo, toggleTodo, deleteTodo, editTodo, addTodoBucketCount, ...props }) {
+
     const classes = useStyles();
-    console.log(todos);
-    const [checked, setChecked] = useState([]);
+    const [checked] = useState([]);
     const [addToDoValue, setToDoValue] = useState('');
     const [inCompleteCount, setInCompleteCount] = useState(0);
     const [completeCount, setCompleteCount] = useState(0);
@@ -87,33 +83,47 @@ function AddToDo({ todoBuckets, todos, addTodo, toggleTodo, deleteTodo, editTodo
 
     useEffect(() => {
         renderValues();
-    }, [inCompleteCount, completeCount, renderValues])
+        if (completeCount > 0 || inCompleteCount > 0) {
+            addTodoBucketCount(props.bucketData.bucketId, completeCount, inCompleteCount);
+        }
+    }, [inCompleteCount, completeCount, renderValues, addTodoBucketCount, props.bucketData.bucketId])
 
 
     return (
         <>
             <Dialog fullWidth maxWidth="sm" open={props.openDialog} scroll="paper">
-                <DialogTitle id="scroll-dialog-title">{props.bucketData.bucketName}
+                <DialogTitle id="scroll-dialog-title" className={classes.title}>{props.bucketData.bucketName}
                     <IconButton aria-label="close" className={classes.closeButton} onClick={props.closeDialog} >
                         <CloseIcon />
                     </IconButton>
                 </DialogTitle>
                 <DialogContent dividers>
                     <div className={classes.root}>
-                        <div className={classes.section1}>
+                        <div>
                             <TextField
                                 label="Add a ToDo"
                                 value={addToDoValue}
                                 onChange={(e) => setToDoValue(e.target.value)}
+                                variant="outlined"
                                 style={{
-                                    marginTop: "-16px", width: '50ch'
+                                    width: '100%'
+                                }}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton aria-label="addToDo" color="primary" disabled={addToDoValue === ''} onClick={handleAddToDoValue} >
+                                                <NoteAddIcon />
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
                                 }}
                             />
-                            <IconButton aria-label="addToDo" disabled={addToDoValue === ''} onClick={handleAddToDoValue} >
-                                <NoteAddIcon />
-                            </IconButton>
-                            {inCompleteCount > 0 && <Grid container alignItems="center">
-                                <Grid item xs>
+                            <Divider style={{ marginTop: '1em' }} variant="middle" />
+                        </div>
+
+                        <div className={classes.section1}>
+                            {inCompleteCount > 0 &&
+                                <div>
                                     <Typography gutterBottom variant="h6">
                                         Incomplete {inCompleteCount > 1 ? 'Items' : 'Item'} - {inCompleteCount}
                                     </Typography>
@@ -146,9 +156,7 @@ function AddToDo({ todoBuckets, todos, addTodo, toggleTodo, deleteTodo, editTodo
                                             );
                                         })}
                                     </List>
-                                </Grid>
-                                <Divider variant="middle" />
-                            </Grid>}
+                                </div>}
                         </div>
 
                         {completeCount > 0 && <div className={classes.section2}>
@@ -160,7 +168,7 @@ function AddToDo({ todoBuckets, todos, addTodo, toggleTodo, deleteTodo, editTodo
                                     const labelId = `checkbox-list-label-${index}`;
                                     return (
                                         <ListItem key={index} role={undefined}>
-                                            <Paper component="form" className={classes.root1} style={{ textDecoration: "line-through" }}>
+                                            <Paper component="form" className={classes.root1} style={{ textDecoration: "line-through", background: '#d3d3d382' }}>
                                                 <Checkbox
                                                     edge="start"
                                                     checked={item.completed}
@@ -193,4 +201,4 @@ function AddToDo({ todoBuckets, todos, addTodo, toggleTodo, deleteTodo, editTodo
     );
 }
 
-export default connect(todos, { addTodo, toggleTodo, deleteTodo, editTodo })(AddToDo)
+export default connect(todos, { addTodo, toggleTodo, deleteTodo, editTodo, addTodoBucketCount })(AddToDo)
