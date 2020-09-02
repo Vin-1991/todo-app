@@ -31,6 +31,7 @@ function AddToDoBucket({ todoBuckets, addTodoBucket }) {
                 bucketName: newValue,
             });
             addTodoBucket(newValue, 0, 0, getCurrentDateTime());
+            getUniqueBucketValues(newValue);
         } else if (newValue && newValue.inputValue) {
             setSelectedValue({
                 bucketName: newValue.inputValue,
