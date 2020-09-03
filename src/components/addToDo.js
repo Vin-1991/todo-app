@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import Divider from '@material-ui/core/Divider';
@@ -77,17 +77,14 @@ function AddToDo({ todos, addTodo, toggleTodo, deleteTodo, editTodo, addTodoBuck
         setToDoValue('');
     }
 
-    const renderValues = useCallback(() => {
+    const renderValues = useMemo(() => {
         setInCompleteCount(todos.filter((item, index) => !item.completed && item.bucketId === props.bucketData.bucketId).length);
         setCompleteCount(todos.filter((item, index) => item.completed && item.bucketId === props.bucketData.bucketId).length);
-    }, [todos, props.bucketData.bucketId])
+    }, [todos, props.bucketData.bucketId]);
 
     useEffect(() => {
-        renderValues();
-        if (completeCount > 0 || inCompleteCount > 0) {
-            addTodoBucketCount(props.bucketData.bucketId, completeCount, inCompleteCount);
-        }
-    }, [inCompleteCount, completeCount, renderValues, addTodoBucketCount, props.bucketData.bucketId])
+        addTodoBucketCount(props.bucketData.bucketId, completeCount, inCompleteCount);
+    }, [renderValues, inCompleteCount, completeCount, addTodoBucketCount, props.bucketData.bucketId]);
 
     return (
         <>
