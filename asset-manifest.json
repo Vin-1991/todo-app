@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/Vin-1991/todo-app/static/css/main.5b8b4006.chunk.css",
+    "main.js": "/Vin-1991/todo-app/static/js/main.22cae734.chunk.js",
+    "main.js.map": "/Vin-1991/todo-app/static/js/main.22cae734.chunk.js.map",
+    "runtime-main.js": "/Vin-1991/todo-app/static/js/runtime-main.535cc6dd.js",
+    "runtime-main.js.map": "/Vin-1991/todo-app/static/js/runtime-main.535cc6dd.js.map",
+    "static/js/2.5a4a57c6.chunk.js": "/Vin-1991/todo-app/static/js/2.5a4a57c6.chunk.js",
+    "static/js/2.5a4a57c6.chunk.js.map": "/Vin-1991/todo-app/static/js/2.5a4a57c6.chunk.js.map",
+    "index.html": "/Vin-1991/todo-app/index.html",
+    "precache-manifest.7af52253c72ca5dc48f1635039705456.js": "/Vin-1991/todo-app/precache-manifest.7af52253c72ca5dc48f1635039705456.js",
+    "service-worker.js": "/Vin-1991/todo-app/service-worker.js",
+    "static/css/main.5b8b4006.chunk.css.map": "/Vin-1991/todo-app/static/css/main.5b8b4006.chunk.css.map",
+    "static/js/2.5a4a57c6.chunk.js.LICENSE.txt": "/Vin-1991/todo-app/static/js/2.5a4a57c6.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.535cc6dd.js",
+    "static/js/2.5a4a57c6.chunk.js",
+    "static/css/main.5b8b4006.chunk.css",
+    "static/js/main.22cae734.chunk.js"
+  ]
+}
